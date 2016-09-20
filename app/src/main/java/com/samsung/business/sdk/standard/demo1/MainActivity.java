@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 				case Activity.RESULT_OK:
 					log("Device administrator activated.");
 					btn2.setEnabled(true);
+					activateLicense();
                     btn1.setEnabled(false);
 					break;
 			}
@@ -108,7 +109,7 @@ public class MainActivity extends Activity {
 		} else {
 			btn1.setEnabled(true);
 			btn2.setEnabled(false);
-		}s
+		}
 
 		try {
 			edm = new EnterpriseDeviceManager(this);
@@ -118,7 +119,6 @@ public class MainActivity extends Activity {
 		}
 		try {
 			elm = EnterpriseLicenseManager.getInstance(this);
-			elm.activateLicense(demoELMKey);
 		} catch (NoClassDefFoundError noClassDefFoundError) {
 			log("No License Manager");
 			elm = null;
@@ -171,17 +171,23 @@ public class MainActivity extends Activity {
 				log("Set camera enabled to: " + !cameraEnabled);
 			} catch (SecurityException e) {
 				log("Exception: " + e);
-				log("Activating license.");
 				log("Have you remembered to change the demoELMKey in the source code?");
 				// This exception indicates that the ELM policy has not been activated, so we activate
 				// it now. Note that embedding the license in the code is unsafe and it is done here for
 				// demonstration purposes only.
-				elm.activateLicense(demoELMKey);
+				activateLicense();
 			} catch (Exception e) {
 				log("Exception: " + e);
 			}
 		} else {
 			log("No Device Manager");
+		}
+	}
+
+	private void activateLicense() {
+		if (elm != null) {
+			elm.activateLicense(demoELMKey);
+			log("Activating license.");
 		}
 	}
 
